@@ -124,7 +124,8 @@ function buildBlog() {
             ...metadata,
             description: metadata.description || '',
             date: metadata.date || 'No date',
-            author: metadata.author || 'Anonymous'
+            author: metadata.author || 'Anonymous',
+            slug: metadata.slug
         });
 
         // Remove the h1 title since we're displaying it from metadata
@@ -145,6 +146,22 @@ function buildBlog() {
         const outputPath = `public/blog/${metadata.slug}.html`;
         fs.writeFileSync(outputPath, finalHtml);
     });
+
+    // Generate blog index page
+    const postsHtml = allPosts.map(post => `
+        <article class="blog-preview">
+            <h1><a href="${post.slug}.html">${post.title || 'Untitled Post'}</a></h1>
+            <div class="post-meta">
+                <span>${post.date}</span> • <span>${post.author}</span>
+            </div>
+            <p>${post.description}</p>
+            <a href="${post.slug}.html" class="read-more">Read more →</a>
+        </article>
+    `).join('\n');
+
+    let blogIndexHtml = blogIndexTemplate.replace('{{posts}}', postsHtml);
+    blogIndexHtml = addBaseUrl(blogIndexHtml);
+    fs.writeFileSync('public/blog/index.html', blogIndexHtml);
 }
 
 // Copy and process JavaScript files
