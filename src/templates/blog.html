@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}} - Blog</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav>
         <div class="nav-left">
-            <a href="/">
-                <img src="/images/logo.png" alt="Logo" class="logo">
+            <a href="../">
+                <img src="../images/logo.png" alt="Logo" class="logo">
             </a>
-            <a href="/about">About</a>
-            <a href="/blog">Blog</a>
-            <a href="/store">Store</a>
+            <a href="../about">About</a>
+            <a href="../blog">Blog</a>
+            <a href="../store">Store</a>
         </div>
         <div class="nav-right">
             <a href="#" class="account-btn">Account</a>
@@ -26,7 +26,7 @@
         <article>
             <h1>{{title}}</h1>
             <div class="post-meta">
-                {{date}} • by {{author}}
+                <span>{{date}}</span> • <span>{{author}}</span>
             </div>
             <div class="post-content">
                 {{content}}
@@ -43,7 +43,7 @@
         <div class="error-message">Oops! Something went wrong. Please try again.</div>
     </form>
 
-    <script src="/js/newsletter.js"></script>
+    <script src="../js/newsletter.js"></script>
     <footer>
         <p>&copy; 2025 3AM</p>
     </footer>
