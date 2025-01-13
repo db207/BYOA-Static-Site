@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "fs-extra": "^11.2.0",
     "marked": "^11.1.1"
   },

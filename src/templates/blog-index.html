@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
+    <title>3AM Blog | Carpe Noctem</title>
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
 </head>
@@ -21,13 +21,12 @@
             <a href="#" class="account-btn">Account</a>
         </div>
     </nav>
-    
-    <main class="blog-post">
-        <article>
-            <div class="post-content">
-                {{content}}
-            </div>
-        </article>
+
+    <main class="blog-index">
+        <h1 class="page-title">Latest Posts</h1>
+        <div class="blog-posts">
+            {{blog_posts}}
+        </div>
     </main>
 
     <form class="newsletter-form">
