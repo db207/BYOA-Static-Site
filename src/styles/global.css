@@ -1,7 +1,11 @@
+#convertkit-form-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+}
+
 .formkit-form[data-uid="7561209"] {
-    position: fixed !important;
-    bottom: 30px !important;
-    right: 30px !important;
     width: 400px !important;
     background: rgba(10, 23, 35, 0.95) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;

@@ -1,6 +1,15 @@
 # 3AM Website Todo List
 
 ## High Priority
+- [ ] Fix Convertkit email collection form
+  - Form is not appearing on the site
+  - Possible issues to check:
+    - Verify Convertkit form ID and embed code
+    - Check if global.css is being properly loaded
+    - Ensure form script is loading correctly
+    - Test with different browsers
+    - Consider fallback to simple HTML form if needed
+
 - [ ] Fix footer positioning
   - Footer "© 2025 3AM" should be fixed to bottom of page
   - Add proper CSS styling to ensure it stays at bottom regardless of content length
