@@ -30,6 +30,8 @@ jobs:
         run: npm ci
         
       - name: Build site
+        env:
+          CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }}
         run: npm run build
         
       - name: Setup Pages
