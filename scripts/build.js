@@ -15,7 +15,13 @@ const BASE_URL = '/BYOA-Static-Site';
 function addBaseUrl(content) {
     return content
         .replace(/href="\//g, `href="${BASE_URL}/`)
-        .replace(/src="\//g, `src="${BASE_URL}/`);
+        .replace(/src="\//g, `src="${BASE_URL}/`)
+        .replace(/href='\/'/g, `href='${BASE_URL}/'`)
+        .replace(/href="\/css\//g, `href="${BASE_URL}/css/`)
+        .replace(/href="\/js\//g, `href="${BASE_URL}/js/`)
+        .replace(/href="\/images\//g, `href="${BASE_URL}/images/`)
+        .replace(/src="\/images\//g, `src="${BASE_URL}/images/`)
+        .replace(/src="\/js\//g, `src="${BASE_URL}/js/`);
 }
 
 // Ensure build directories exist
@@ -24,10 +30,14 @@ fs.ensureDirSync('public/blog');
 fs.ensureDirSync('public/css');
 fs.ensureDirSync('public/js');
 
-// Read and process templates
-const pageTemplate = addBaseUrl(fs.readFileSync('src/templates/page.html', 'utf-8'));
-const blogTemplate = addBaseUrl(fs.readFileSync('src/templates/blog.html', 'utf-8'));
-const blogIndexTemplate = addBaseUrl(fs.readFileSync('src/templates/blog-index.html', 'utf-8'));
+// Read templates
+const pageTemplate = fs.readFileSync('src/templates/page.html', 'utf-8');
+const blogTemplate = fs.readFileSync('src/templates/blog.html', 'utf-8');
+const blogIndexTemplate = fs.readFileSync('src/templates/blog-index.html', 'utf-8');
+const indexTemplate = fs.readFileSync('src/templates/index.html', 'utf-8');
+
+// Write index.html
+fs.writeFileSync('public/index.html', addBaseUrl(indexTemplate));
 
 // Parse frontmatter
 function parseFrontmatter(content) {
@@ -80,9 +90,11 @@ function buildPages() {
         const html = marked(content);
         console.log('Generated HTML length:', html.length);
         
-        const finalHtml = pageTemplate
+        let finalHtml = pageTemplate
             .replace('{{content}}', html)
             .replace('{{title}}', metadata.title || page.replace('.md', '').charAt(0).toUpperCase() + page.replace('.md', '').slice(1));
+        
+        finalHtml = addBaseUrl(finalHtml);
         
         const outputPath = `public/${page.replace('.md', '.html')}`;
         fs.writeFileSync(outputPath, finalHtml);
@@ -126,6 +138,9 @@ function buildBlog() {
         });
         // Replace content last
         finalHtml = finalHtml.replace('{{content}}', contentWithoutTitle);
+        
+        // Add base URL to paths
+        finalHtml = addBaseUrl(finalHtml);
         
         const outputPath = `public/blog/${metadata.slug}.html`;
         fs.writeFileSync(outputPath, finalHtml);
