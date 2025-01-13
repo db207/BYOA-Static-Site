@@ -1,28 +1,3 @@
-const FORM_ID = '7561209';
-
-async function submitToConvertKit(email) {
-    try {
-        const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email,
-                formId: FORM_ID
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Subscription failed');
-        }
-
-        return await response.json();
-    } catch (error) {
-        throw error;
-    }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.newsletter-form');
     const successMessage = form.querySelector('.success-message');
@@ -38,7 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.disabled = true;
             submitButton.textContent = 'Subscribing...';
             
-            await submitToConvertKit(emailInput.value);
+            const response = await fetch('/api/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: emailInput.value
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Subscription failed');
+            }
             
             // Show success message
             successMessage.style.display = 'block';

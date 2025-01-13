@@ -1,5 +1,6 @@
+const fetch = require('node-fetch');
+
 exports.handler = async function(event, context) {
-    // Only allow POST requests
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -8,9 +9,9 @@ exports.handler = async function(event, context) {
     }
 
     try {
-        const { email, formId } = JSON.parse(event.body);
+        const { email } = JSON.parse(event.body);
+        const formId = '7561209'; // Your ConvertKit form ID
         
-        // Call ConvertKit API
         const response = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe`, {
             method: 'POST',
             headers: {
@@ -30,11 +31,19 @@ exports.handler = async function(event, context) {
 
         return {
             statusCode: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify(data)
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ error: 'Failed to subscribe' })
         };
     }
