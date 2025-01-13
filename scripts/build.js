@@ -3,6 +3,11 @@ const path = require('path');
 const { marked } = require('marked');
 require('dotenv').config();
 
+// Configure marked to respect line breaks
+marked.setOptions({
+    breaks: true
+});
+
 // Ensure build directories exist
 fs.ensureDirSync('public');
 fs.ensureDirSync('public/blog');
@@ -51,18 +56,31 @@ function parseFrontmatter(content) {
 // Build pages
 function buildPages() {
     const pages = fs.readdirSync('src/pages');
+    console.log('Found pages:', pages);
     pages.forEach(page => {
         if (page === 'index.md') return;
         
+        console.log('Building page:', page);
         const markdown = fs.readFileSync(`src/pages/${page}`, 'utf-8');
+        console.log('Read markdown content:', markdown.substring(0, 100) + '...');
+        
         const { metadata, content } = parseFrontmatter(markdown);
+        console.log('Parsed content length:', content.length);
+        
         const html = marked(content);
+        console.log('Generated HTML length:', html.length);
+        
         const finalHtml = pageTemplate
             .replace('{{content}}', html)
             .replace('{{title}}', metadata.title || page.replace('.md', '').charAt(0).toUpperCase() + page.replace('.md', '').slice(1));
         
         const outputPath = `public/${page.replace('.md', '.html')}`;
         fs.writeFileSync(outputPath, finalHtml);
+        console.log('Page built successfully:', outputPath);
+        
+        // Verify the file was written
+        const written = fs.readFileSync(outputPath, 'utf-8');
+        console.log('Written file size:', written.length, 'bytes');
     });
 }
 
@@ -127,7 +145,9 @@ function processJavaScript() {
 }
 
 // Copy static assets
-fs.copySync('src/styles', 'public/css');
+console.log('Copying static assets...');
+fs.copySync('src/styles', 'public/css', { overwrite: true });
+console.log('Static assets copied successfully');
 
 // Run build
 buildPages();
