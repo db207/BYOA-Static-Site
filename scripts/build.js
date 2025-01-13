@@ -164,36 +164,12 @@ function buildBlog() {
     fs.writeFileSync('public/blog/index.html', blogIndexHtml);
 }
 
-// Copy and process JavaScript files
-function processJavaScript() {
-    // Read the newsletter.js file
-    let newsletterJs = fs.readFileSync('src/scripts/newsletter.js', 'utf-8');
-    
-    // Get API key from environment variable
-    const apiKey = process.env.CONVERTKIT_API_KEY;
-    if (!apiKey) {
-        throw new Error('CONVERTKIT_API_KEY environment variable is not set');
-    }
-    
-    // Instead of exposing the API key in client-side code,
-    // we'll create a server endpoint to handle the subscription
-    newsletterJs = newsletterJs.replace(
-        'const FORM_ID = \'7561209\';',
-        'const FORM_ID = \'7561209\';\nconst API_ENDPOINT = \'/api/subscribe\';'
-    );
-    
-    // Write the processed file
-    fs.writeFileSync('public/js/newsletter.js', newsletterJs);
-}
-
 // Copy static assets
 console.log('Copying static assets...');
 fs.copySync('src/styles', 'public/css', { overwrite: true });
 fs.copySync('src/images', 'public/images', { overwrite: true });
-fs.copySync('src/scripts', 'public/js', { overwrite: true });
 console.log('Static assets copied successfully');
 
 // Run build
 buildPages();
-buildBlog();
-processJavaScript(); 
+buildBlog(); 
