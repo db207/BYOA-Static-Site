@@ -8,6 +8,16 @@ marked.setOptions({
     breaks: true
 });
 
+// GitHub Pages configuration
+const BASE_URL = '/BYOA-Static-Site';
+
+// Function to add base URL to absolute paths
+function addBaseUrl(content) {
+    return content
+        .replace(/href="\//g, `href="${BASE_URL}/`)
+        .replace(/src="\//g, `src="${BASE_URL}/`);
+}
+
 // Ensure build directories exist
 fs.ensureDirSync('public');
 fs.ensureDirSync('public/blog');
@@ -15,9 +25,9 @@ fs.ensureDirSync('public/css');
 fs.ensureDirSync('public/js');
 
 // Read and process templates
-const pageTemplate = fs.readFileSync('src/templates/page.html', 'utf-8');
-const blogTemplate = fs.readFileSync('src/templates/blog.html', 'utf-8');
-const blogIndexTemplate = fs.readFileSync('src/templates/blog-index.html', 'utf-8');
+const pageTemplate = addBaseUrl(fs.readFileSync('src/templates/page.html', 'utf-8'));
+const blogTemplate = addBaseUrl(fs.readFileSync('src/templates/blog.html', 'utf-8'));
+const blogIndexTemplate = addBaseUrl(fs.readFileSync('src/templates/blog-index.html', 'utf-8'));
 
 // Parse frontmatter
 function parseFrontmatter(content) {
