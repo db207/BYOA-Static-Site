@@ -147,6 +147,8 @@ function processJavaScript() {
 // Copy static assets
 console.log('Copying static assets...');
 fs.copySync('src/styles', 'public/css', { overwrite: true });
+fs.copySync('src/images', 'public/images', { overwrite: true });
+fs.copySync('src/scripts', 'public/js', { overwrite: true });
 console.log('Static assets copied successfully');
 
 // Run build
