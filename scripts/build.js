@@ -21,16 +21,15 @@ function addBaseUrl(content) {
 
 // Ensure build directories exist
 fs.ensureDirSync('public');
-fs.ensureDirSync(`public${BASE_URL}`);
-fs.ensureDirSync(`public${BASE_URL}/blog`);
-fs.ensureDirSync(`public${BASE_URL}/css`);
-fs.ensureDirSync(`public${BASE_URL}/js`);
-fs.ensureDirSync(`public${BASE_URL}/images`);
+fs.ensureDirSync('public/blog');
+fs.ensureDirSync('public/css');
+fs.ensureDirSync('public/js');
+fs.ensureDirSync('public/images');
 
 // Copy static assets first
 console.log('Copying static assets...');
-fs.copySync('src/styles', `public${BASE_URL}/css`, { overwrite: true });
-fs.copySync('src/images', `public${BASE_URL}/images`, { overwrite: true });
+fs.copySync('src/styles', 'public/css', { overwrite: true });
+fs.copySync('src/images', 'public/images', { overwrite: true });
 console.log('Static assets copied successfully');
 
 // Read templates
@@ -39,10 +38,9 @@ const blogTemplate = fs.readFileSync('src/templates/blog.html', 'utf-8');
 const blogIndexTemplate = fs.readFileSync('src/templates/blog-index.html', 'utf-8');
 const indexTemplate = fs.readFileSync('src/templates/index.html', 'utf-8');
 
-// Write index.html to both root and base URL directory
+// Write index.html
 const processedIndex = addBaseUrl(indexTemplate);
 fs.writeFileSync('public/index.html', processedIndex);
-fs.writeFileSync(`public${BASE_URL}/index.html`, processedIndex);
 
 // Parse frontmatter
 function parseFrontmatter(content) {
@@ -101,7 +99,7 @@ function buildPages() {
         
         finalHtml = addBaseUrl(finalHtml);
         
-        const outputPath = `public${BASE_URL}/${page.replace('.md', '.html')}`;
+        const outputPath = `public/${page.replace('.md', '.html')}`;
         fs.writeFileSync(outputPath, finalHtml);
         console.log('Page built successfully:', outputPath);
     });
@@ -144,7 +142,7 @@ function buildBlog() {
         // Add base URL to paths
         finalHtml = addBaseUrl(finalHtml);
         
-        const outputPath = `public${BASE_URL}/blog/${metadata.slug}.html`;
+        const outputPath = `public/blog/${metadata.slug}.html`;
         fs.writeFileSync(outputPath, finalHtml);
     });
 
@@ -164,8 +162,8 @@ function buildBlog() {
     blogIndexHtml = addBaseUrl(blogIndexHtml);
     
     // Write blog index to both /blog and /blog/ paths
-    fs.writeFileSync(`public${BASE_URL}/blog/index.html`, blogIndexHtml);
-    fs.writeFileSync(`public${BASE_URL}/blog.html`, blogIndexHtml);
+    fs.writeFileSync('public/blog/index.html', blogIndexHtml);
+    fs.writeFileSync('public/blog.html', blogIndexHtml);
 }
 
 // Run build
