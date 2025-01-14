@@ -13,22 +13,19 @@ const BASE_URL = '/BYOA-Static-Site';
 
 // Function to add base URL to absolute paths
 function addBaseUrl(content) {
+    // Don't modify paths that already have the base URL
     return content
-        .replace(/href="\//g, `href="${BASE_URL}/`)
-        .replace(/src="\//g, `src="${BASE_URL}/`)
-        .replace(/href='\/'/g, `href='${BASE_URL}/'`)
-        .replace(/href="\/css\//g, `href="${BASE_URL}/css/`)
-        .replace(/href="\/js\//g, `href="${BASE_URL}/js/`)
-        .replace(/href="\/images\//g, `href="${BASE_URL}/images/`)
-        .replace(/src="\/images\//g, `src="${BASE_URL}/images/`)
-        .replace(/src="\/js\//g, `src="${BASE_URL}/js/`);
+        .replace(new RegExp(`href="(?!${BASE_URL})\/`, 'g'), `href="${BASE_URL}/`)
+        .replace(new RegExp(`src="(?!${BASE_URL})\/`, 'g'), `src="${BASE_URL}/`);
 }
 
 // Ensure build directories exist
 fs.ensureDirSync('public');
-fs.ensureDirSync('public/blog');
-fs.ensureDirSync('public/css');
-fs.ensureDirSync('public/js');
+fs.ensureDirSync(`public${BASE_URL}`);
+fs.ensureDirSync(`public${BASE_URL}/blog`);
+fs.ensureDirSync(`public${BASE_URL}/css`);
+fs.ensureDirSync(`public${BASE_URL}/js`);
+fs.ensureDirSync(`public${BASE_URL}/images`);
 
 // Read templates
 const pageTemplate = fs.readFileSync('src/templates/page.html', 'utf-8');
@@ -37,7 +34,7 @@ const blogIndexTemplate = fs.readFileSync('src/templates/blog-index.html', 'utf-
 const indexTemplate = fs.readFileSync('src/templates/index.html', 'utf-8');
 
 // Write index.html
-fs.writeFileSync('public/index.html', addBaseUrl(indexTemplate));
+fs.writeFileSync(`public${BASE_URL}/index.html`, addBaseUrl(indexTemplate));
 
 // Parse frontmatter
 function parseFrontmatter(content) {
@@ -96,7 +93,7 @@ function buildPages() {
         
         finalHtml = addBaseUrl(finalHtml);
         
-        const outputPath = `public/${page.replace('.md', '.html')}`;
+        const outputPath = `public${BASE_URL}/${page.replace('.md', '.html')}`;
         fs.writeFileSync(outputPath, finalHtml);
         console.log('Page built successfully:', outputPath);
         
@@ -143,7 +140,7 @@ function buildBlog() {
         // Add base URL to paths
         finalHtml = addBaseUrl(finalHtml);
         
-        const outputPath = `public/blog/${metadata.slug}.html`;
+        const outputPath = `public${BASE_URL}/blog/${metadata.slug}.html`;
         fs.writeFileSync(outputPath, finalHtml);
     });
 
@@ -161,13 +158,13 @@ function buildBlog() {
 
     let blogIndexHtml = blogIndexTemplate.replace('{{posts}}', postsHtml);
     blogIndexHtml = addBaseUrl(blogIndexHtml);
-    fs.writeFileSync('public/blog/index.html', blogIndexHtml);
+    fs.writeFileSync(`public${BASE_URL}/blog/index.html`, blogIndexHtml);
 }
 
 // Copy static assets
 console.log('Copying static assets...');
-fs.copySync('src/styles', 'public/css', { overwrite: true });
-fs.copySync('src/images', 'public/images', { overwrite: true });
+fs.copySync('src/styles', `public${BASE_URL}/css`, { overwrite: true });
+fs.copySync('src/images', `public${BASE_URL}/images`, { overwrite: true });
 console.log('Static assets copied successfully');
 
 // Run build
