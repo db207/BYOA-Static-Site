@@ -150,12 +150,12 @@ function buildBlog() {
     // Generate blog index page
     const postsHtml = allPosts.map(post => `
         <article class="blog-preview">
-            <h1><a href="${post.slug}.html">${post.title || 'Untitled Post'}</a></h1>
+            <h1><a href="${BASE_URL}/blog/${post.slug}.html">${post.title || 'Untitled Post'}</a></h1>
             <div class="post-meta">
                 <span>${post.date}</span> • <span>${post.author}</span>
             </div>
             <p>${post.description}</p>
-            <a href="${post.slug}.html" class="read-more">Read more →</a>
+            <a href="${BASE_URL}/blog/${post.slug}.html" class="read-more">Read more →</a>
         </article>
     `).join('\n');
 
