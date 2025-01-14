@@ -15,8 +15,8 @@ const BASE_URL = '/BYOA-Static-Site';
 function addBaseUrl(content) {
     // Don't modify paths that already have the base URL
     return content
-        .replace(new RegExp(`href="(?!${BASE_URL})\/`, 'g'), `href="${BASE_URL}/`)
-        .replace(new RegExp(`src="(?!${BASE_URL})\/`, 'g'), `src="${BASE_URL}/`);
+        .replace(new RegExp(`href="(?!${BASE_URL}|https?:)\/`, 'g'), `href="${BASE_URL}/`)
+        .replace(new RegExp(`src="(?!${BASE_URL}|https?:)\/`, 'g'), `src="${BASE_URL}/`);
 }
 
 // Ensure build directories exist
@@ -27,14 +27,22 @@ fs.ensureDirSync(`public${BASE_URL}/css`);
 fs.ensureDirSync(`public${BASE_URL}/js`);
 fs.ensureDirSync(`public${BASE_URL}/images`);
 
+// Copy static assets first
+console.log('Copying static assets...');
+fs.copySync('src/styles', `public${BASE_URL}/css`, { overwrite: true });
+fs.copySync('src/images', `public${BASE_URL}/images`, { overwrite: true });
+console.log('Static assets copied successfully');
+
 // Read templates
 const pageTemplate = fs.readFileSync('src/templates/page.html', 'utf-8');
 const blogTemplate = fs.readFileSync('src/templates/blog.html', 'utf-8');
 const blogIndexTemplate = fs.readFileSync('src/templates/blog-index.html', 'utf-8');
 const indexTemplate = fs.readFileSync('src/templates/index.html', 'utf-8');
 
-// Write index.html
-fs.writeFileSync(`public${BASE_URL}/index.html`, addBaseUrl(indexTemplate));
+// Write index.html to both root and base URL directory
+const processedIndex = addBaseUrl(indexTemplate);
+fs.writeFileSync('public/index.html', processedIndex);
+fs.writeFileSync(`public${BASE_URL}/index.html`, processedIndex);
 
 // Parse frontmatter
 function parseFrontmatter(content) {
@@ -96,10 +104,6 @@ function buildPages() {
         const outputPath = `public${BASE_URL}/${page.replace('.md', '.html')}`;
         fs.writeFileSync(outputPath, finalHtml);
         console.log('Page built successfully:', outputPath);
-        
-        // Verify the file was written
-        const written = fs.readFileSync(outputPath, 'utf-8');
-        console.log('Written file size:', written.length, 'bytes');
     });
 }
 
@@ -158,14 +162,11 @@ function buildBlog() {
 
     let blogIndexHtml = blogIndexTemplate.replace('{{posts}}', postsHtml);
     blogIndexHtml = addBaseUrl(blogIndexHtml);
+    
+    // Write blog index to both /blog and /blog/ paths
     fs.writeFileSync(`public${BASE_URL}/blog/index.html`, blogIndexHtml);
+    fs.writeFileSync(`public${BASE_URL}/blog.html`, blogIndexHtml);
 }
-
-// Copy static assets
-console.log('Copying static assets...');
-fs.copySync('src/styles', `public${BASE_URL}/css`, { overwrite: true });
-fs.copySync('src/images', `public${BASE_URL}/images`, { overwrite: true });
-console.log('Static assets copied successfully');
 
 // Run build
 buildPages();
