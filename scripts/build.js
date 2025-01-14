@@ -25,11 +25,17 @@ fs.ensureDirSync('public/blog');
 fs.ensureDirSync('public/css');
 fs.ensureDirSync('public/js');
 fs.ensureDirSync('public/images');
+fs.ensureDirSync('public/BYOA-Static-Site');
+fs.ensureDirSync('public/BYOA-Static-Site/css');
+fs.ensureDirSync('public/BYOA-Static-Site/images');
 
 // Copy static assets first
 console.log('Copying static assets...');
 fs.copySync('src/styles', 'public/css', { overwrite: true });
 fs.copySync('src/images', 'public/images', { overwrite: true });
+// Copy for GitHub Pages path
+fs.copySync('src/styles', 'public/BYOA-Static-Site/css', { overwrite: true });
+fs.copySync('src/images', 'public/BYOA-Static-Site/images', { overwrite: true });
 console.log('Static assets copied successfully');
 
 // Read templates
