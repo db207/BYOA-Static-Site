@@ -99,14 +99,25 @@ function buildPages() {
         const html = marked(content);
         console.log('Generated HTML length:', html.length);
         
+        // Set isAboutPage variable for the about page
+        const isAboutPage = page === 'about.md';
+        
         let finalHtml = pageTemplate
             .replace('{{content}}', html)
-            .replace('{{title}}', metadata.title || page.replace('.md', '').charAt(0).toUpperCase() + page.replace('.md', '').slice(1));
+            .replace('{{title}}', metadata.title || page.replace('.md', '').charAt(0).toUpperCase() + page.replace('.md', '').slice(1))
+            .replace(/{{#if isAboutPage}}([\s\S]*?){{\/if}}/g, (match, content) => {
+                return isAboutPage ? content : '';
+            });
         
         finalHtml = addBaseUrl(finalHtml);
         
         const outputPath = `public/${page.replace('.md', '.html')}`;
         fs.writeFileSync(outputPath, finalHtml);
+        
+        // Also write to BYOA-Static-Site directory
+        const ghPagesPath = `public/BYOA-Static-Site/${page.replace('.md', '.html')}`;
+        fs.writeFileSync(ghPagesPath, finalHtml);
+        
         console.log('Page built successfully:', outputPath);
     });
 }
